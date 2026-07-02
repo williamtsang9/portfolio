@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TERRA — Ground Yourself in the Future of Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Outfit:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c110e;
+    --ink: #efe9db;
+    --ink-dim: rgba(239, 233, 219, 0.55);
+    --sage: #a8bfa9;
+    --sand: #d8c9a8;
+    --terracotta: #c98a68;
+    --glass: rgba(20, 28, 23, 0.42);
+    --glass-border: rgba(216, 201, 168, 0.14);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Outfit', 'Segoe UI', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: auto; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 300;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background: var(--terracotta); color: var(--bg); }
+
+  /* ── 3D CANVAS ── */
+  #scene {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    outline: none;
+  }
+
+  /* ── FILM GRAIN ── */
+  .grain {
+    position: fixed;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation: grain 9s steps(6) infinite;
+  }
+  @keyframes grain {
+    0%, 100% { transform: translate(0, 0); }
+    20% { transform: translate(-4%, 3%); }
+    40% { transform: translate(3%, -5%); }
+    60% { transform: translate(-3%, -2%); }
+    80% { transform: translate(4%, 4%); }
+  }
+
+  /* ── VIGNETTE ── */
+  .vignette {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(6, 9, 7, 0.55) 100%);
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 48px;
+    mix-blend-mode: difference;
+  }
+  .logo {
+    font-family: var(--serif);
+    font-size: 22px;
+    letter-spacing: 0.42em;
+    font-weight: 500;
+  }
+  .logo em { font-style: italic; font-weight: 300; color: var(--sand); }
+  .nav-right {
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+
+  /* ── SCROLL PROGRESS ── */
+  .progress {
+    position: fixed;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    align-items: center;
+  }
+  .progress .dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--ink-dim);
+    opacity: 0.35;
+    transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    cursor: pointer;
+  }
+  .progress .dot.active {
+    opacity: 1;
+    background: var(--sand);
+    height: 26px;
+    border-radius: 3px;
+  }
+
+  /* ── CONTENT PANELS ── */
+  main { position: relative; z-index: 5; }
+
+  section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 0 8vw;
+    position: relative;
+  }
+
+  section .panel {
+    max-width: 620px;
+    opacity: 0;
+    transform: translateY(46px);
+    transition: opacity 1.3s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 1.3s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+  section.lit .panel { opacity: 1; transform: translateY(0); }
+
+  section:nth-child(even) { justify-content: flex-end; }
+  section:nth-child(even) .panel { text-align: right; }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 11px;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 28px;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 34px;
+    height: 1px;
+    background: var(--sage);
+    opacity: 0.6;
+  }
+  section:nth-child(even) .eyebrow { flex-direction: row-reverse; }
+
+  h1, h2 {
+    font-family: var(--serif);
+    font-weight: 300;
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+  }
+  h1 { font-size: clamp(56px, 9vw, 128px); }
+  h2 { font-size: clamp(42px, 6.4vw, 88px); }
+  h1 em, h2 em {
+    font-style: italic;
+    color: var(--sand);
+  }
+
+  .lede {
+    margin-top: 34px;
+    font-size: clamp(15px, 1.35vw, 18px);
+    line-height: 1.85;
+    color: var(--ink-dim);
+    max-width: 480px;
+    font-weight: 300;
+  }
+  section:nth-child(even) .lede { margin-left: auto; }
+
+  .glass-card {
+    margin-top: 40px;
+    display: inline-block;
+    padding: 26px 34px;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 18px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+  .glass-card .num {
+    font-family: var(--serif);
+    font-size: 40px;
+    color: var(--sand);
+    line-height: 1;
+  }
+  .glass-card .cap {
+    margin-top: 8px;
+    font-size: 10.5px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+  .glass-row { display: flex; gap: 18px; flex-wrap: wrap; }
+  section:nth-child(even) .glass-row { justify-content: flex-end; }
+
+  .btn {
+    display: inline-block;
+    margin-top: 44px;
+    padding: 18px 46px;
+    border: 1px solid var(--sand);
+    border-radius: 100px;
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    background: transparent;
+  }
+  .btn:hover {
+    background: var(--sand);
+    color: var(--bg);
+    box-shadow: 0 0 60px rgba(216, 201, 168, 0.25);
+  }
+
+  /* ── HERO EXTRAS ── */
+  #hero .panel { max-width: 900px; }
+  .scroll-hint {
+    position: absolute;
+    bottom: 42px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+  .scroll-hint .line {
+    width: 1px;
+    height: 52px;
+    background: linear-gradient(var(--sand), transparent);
+    animation: drip 2.4s ease-in-out infinite;
+    transform-origin: top;
+  }
+  @keyframes drip {
+    0% { transform: scaleY(0); opacity: 0; }
+    35% { transform: scaleY(1); opacity: 1; }
+    100% { transform: scaleY(1) translateY(18px); opacity: 0; }
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 5;
+    padding: 60px 8vw 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10.5px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+
+  @media (max-width: 720px) {
+    nav { padding: 22px 24px; }
+    section { padding: 0 24px; }
+    .progress { right: 16px; }
+    section:nth-child(even) { justify-content: flex-start; }
+    section:nth-child(even) .panel { text-align: left; }
+    section:nth-child(even) .eyebrow { flex-direction: row; }
+    section:nth-child(even) .lede { margin-left: 0; }
+    section:nth-child(even) .glass-row { justify-content: flex-start; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .grain, .scroll-hint .line { animation: none; }
+    section .panel { transition-duration: 0.01s; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="scene"></canvas>
+<div class="vignette"></div>
+<div class="grain"></div>
+
+<nav>
+  <div class="logo">TERRA<em>.</em></div>
+  <div class="nav-right">Est. 2026 · San Francisco</div>
+</nav>
+
+<div class="progress" id="progress"></div>
+
+<main id="main">
+
+  <!-- 01 · ARRIVE -->
+  <section id="hero" data-scene="0">
+    <div class="panel">
+      <div class="eyebrow">A modern sanctuary</div>
+      <h1>Ground yourself<br>in <em>stillness</em></h1>
+      <p class="lede">
+        TERRA is a next-generation yoga studio where ancient practice meets
+        quiet technology. Breathe in. Scroll down. Let the space unfold around you.
+      </p>
+    </div>
+    <div class="scroll-hint">
+      <span>Begin</span>
+      <div class="line"></div>
+    </div>
+  </section>
+
+  <!-- 02 · BREATH -->
+  <section id="breath" data-scene="1">
+    <div class="panel">
+      <div class="eyebrow">01 · Breath</div>
+      <h2>Everything begins<br>with <em>one breath</em></h2>
+      <p class="lede">
+        You are now inside the stone. Around you, ten thousand particles of
+        light move the way air moves through the body — slow, deliberate,
+        alive. Our breathwork sessions teach the same rhythm: four counts in,
+        six counts out, until the noise dissolves.
+      </p>
+      <div class="glass-row">
+        <div class="glass-card"><div class="num">4·6</div><div class="cap">Breath ratio</div></div>
+        <div class="glass-card"><div class="num">20m</div><div class="cap">Guided sessions</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 · FLOW -->
+  <section id="flow" data-scene="2">
+    <div class="panel">
+      <div class="eyebrow">02 · Flow</div>
+      <h2>Movement is a<br><em>continuous line</em></h2>
+      <p class="lede">
+        The knot ahead never begins and never ends — like a vinyasa held in
+        perfect continuity. Our flow classes are built on that idea: each
+        posture folds into the next, strength borrowed from softness,
+        effort dissolved into ease.
+      </p>
+      <div class="glass-row">
+        <div class="glass-card"><div class="num">60m</div><div class="cap">Vinyasa flow</div></div>
+        <div class="glass-card"><div class="num">Lv 1–3</div><div class="cap">All bodies welcome</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 · STILLNESS -->
+  <section id="stillness" data-scene="3">
+    <div class="panel">
+      <div class="eyebrow">03 · Stillness</div>
+      <h2>Ripples settle.<br><em>So do you</em></h2>
+      <p class="lede">
+        Drop a thought into still water and watch the rings widen, soften,
+        disappear. Meditation at TERRA is unhurried and unforced — candlelit
+        rooms, warm cedar floors, and the radical permission to do
+        absolutely nothing.
+      </p>
+      <div class="glass-row">
+        <div class="glass-card"><div class="num">7am</div><div class="cap">Sunrise sits</div></div>
+        <div class="glass-card"><div class="num">∞</div><div class="cap">Patience required</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 · ARRIVE (CTA) -->
+  <section id="join" data-scene="4">
+    <div class="panel">
+      <div class="eyebrow">04 · Arrive</div>
+      <h2>The mat is<br><em>waiting</em></h2>
+      <p class="lede">
+        Step back and see the whole constellation — breath, flow, stillness —
+        orbiting one grounded center. That center is you. First class is on us.
+      </p>
+      <a class="btn" href="mailto:hello@terra.studio">Reserve your mat</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <span>TERRA Studio</span>
+  <span>Breathe · Move · Be</span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(() => {
+  'use strict';
+
+  const COL = {
+    bg: 0x0c110e,
+    sage: 0xa8bfa9,
+    sand: 0xd8c9a8,
+    terracotta: 0xc98a68,
+    ink: 0xefe9db,
+  };
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ── RENDERER / SCENE / CAMERA ──
+  const canvas = document.getElementById('scene');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(COL.bg);
+  scene.fog = new THREE.Fog(COL.bg, 4, 70);
+
+  const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 400);
+  camera.position.set(0, 0.6, 9);
+
+  // ── LIGHTS ──
+  scene.add(new THREE.AmbientLight(COL.ink, 0.35));
+  const sun = new THREE.DirectionalLight(COL.sand, 0.9);
+  sun.position.set(6, 10, 4);
+  scene.add(sun);
+  const lantern = new THREE.PointLight(COL.terracotta, 1.1, 40);
+  scene.add(lantern); // follows the camera
+
+  // ── 1. THE BREATHING STONE (hero) ──
+  const stoneGroup = new THREE.Group();
+  stoneGroup.position.set(0, 0, -14);
+  scene.add(stoneGroup);
+
+  const stoneGeo = new THREE.IcosahedronGeometry(3.4, 4);
+  const basePos = stoneGeo.attributes.position.array.slice();
+
+  const stonePoints = new THREE.Points(
+    stoneGeo,
+    new THREE.PointsMaterial({ color: COL.sand, size: 0.045, transparent: true, opacity: 0.95 })
+  );
+  stoneGroup.add(stonePoints);
+
+  const stoneWire = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(3.4, 1),
+    new THREE.MeshBasicMaterial({ color: COL.sage, wireframe: true, transparent: true, opacity: 0.16 })
+  );
+  stoneGroup.add(stoneWire);
+
+  const core = new THREE.Mesh(
+    new THREE.SphereGeometry(0.6, 32, 32),
+    new THREE.MeshStandardMaterial({
+      color: COL.terracotta, emissive: COL.terracotta, emissiveIntensity: 0.9,
+      roughness: 0.4, metalness: 0.1,
+    })
+  );
+  stoneGroup.add(core);
+
+  // ── 2. BREATH PARTICLES (inside the stone) ──
+  const dustCount = 2600;
+  const dustGeo = new THREE.BufferGeometry();
+  const dustPos = new Float32Array(dustCount * 3);
+  const dustSeed = new Float32Array(dustCount);
+  for (let i = 0; i < dustCount; i++) {
+    const r = 4 + Math.random() * 16;
+    const th = Math.random() * Math.PI * 2;
+    const ph = Math.acos(2 * Math.random() - 1);
+    dustPos[i * 3] = r * Math.sin(ph) * Math.cos(th);
+    dustPos[i * 3 + 1] = r * Math.sin(ph) * Math.sin(th) * 0.6;
+    dustPos[i * 3 + 2] = r * Math.cos(ph) - 16;
+    dustSeed[i] = Math.random() * Math.PI * 2;
+  }
+  dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+  const dust = new THREE.Points(
+    dustGeo,
+    new THREE.PointsMaterial({ color: COL.sage, size: 0.06, transparent: true, opacity: 0.75 })
+  );
+  scene.add(dust);
+
+  // ── 3. THE FLOW KNOT ──
+  const knot = new THREE.Mesh(
+    new THREE.TorusKnotGeometry(3.2, 0.55, 220, 24, 2, 3),
+    new THREE.MeshStandardMaterial({
+      color: 0x22352a, emissive: COL.sage, emissiveIntensity: 0.25,
+      roughness: 0.35, metalness: 0.55,
+    })
+  );
+  knot.position.set(4.5, 0.5, -52);
+  scene.add(knot);
+
+  const knotHalo = new THREE.Mesh(
+    new THREE.TorusKnotGeometry(3.2, 0.72, 110, 12, 2, 3),
+    new THREE.MeshBasicMaterial({ color: COL.sand, wireframe: true, transparent: true, opacity: 0.08 })
+  );
+  knotHalo.position.copy(knot.position);
+  scene.add(knotHalo);
+
+  // ── 4. THE RIPPLES (stillness) ──
+  const rippleGroup = new THREE.Group();
+  rippleGroup.position.set(-5, -2.5, -92);
+  rippleGroup.rotation.x = Math.PI / 2.15;
+  scene.add(rippleGroup);
+
+  const ripples = [];
+  for (let i = 0; i < 7; i++) {
+    const ring = new THREE.Mesh(
+      new THREE.TorusGeometry(1.6 + i * 1.9, 0.025, 8, 128),
+      new THREE.MeshBasicMaterial({ color: i % 2 ? COL.sage : COL.sand, transparent: true, opacity: 0.5 })
+    );
+    ring.userData.phase = i * 0.9;
+    rippleGroup.add(ring);
+    ripples.push(ring);
+  }
+  const waterDrop = new THREE.Mesh(
+    new THREE.SphereGeometry(0.45, 24, 24),
+    new THREE.MeshStandardMaterial({
+      color: COL.sand, emissive: COL.sand, emissiveIntensity: 0.7, roughness: 0.3,
+    })
+  );
+  rippleGroup.add(waterDrop);
+
+  // ── AMBIENT STARFIELD (whole journey) ──
+  const starCount = 1600;
+  const starGeo = new THREE.BufferGeometry();
+  const starPos = new Float32Array(starCount * 3);
+  for (let i = 0; i < starCount; i++) {
+    starPos[i * 3] = (Math.random() - 0.5) * 90;
+    starPos[i * 3 + 1] = (Math.random() - 0.5) * 60;
+    starPos[i * 3 + 2] = 20 - Math.random() * 170;
+  }
+  starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+  scene.add(new THREE.Points(
+    starGeo,
+    new THREE.PointsMaterial({ color: COL.ink, size: 0.05, transparent: true, opacity: 0.4 })
+  ));
+
+  // ── CAMERA CHOREOGRAPHY ──
+  // One keyframe per section. The camera literally travels INTO the stone
+  // (scene 1), THROUGH the knot (scene 2), and DOWN over the ripples (scene 3).
+  const KEYS = [
+    { pos: [0, 0.6, 9],      look: [0, 0, -14],   fogFar: 70 },   // hero: face the stone
+    { pos: [0, 0, -14],      look: [2, 0.4, -30], fogFar: 55 },   // breath: inside the stone / dust
+    { pos: [4.5, 0.5, -45],  look: [4.5, 0.5, -52], fogFar: 60 }, // flow: nose-to-nose with the knot
+    { pos: [-5, 3.5, -84],   look: [-5, -2.5, -92], fogFar: 60 }, // stillness: looking down at ripples
+    { pos: [-2, 7, -118],    look: [1, 0, -60],   fogFar: 220 },  // arrive: pull back, see it all
+  ];
+
+  const smooth = t => t * t * (3 - 2 * t);
+  const v = new THREE.Vector3();
+  const camTargetPos = new THREE.Vector3().fromArray(KEYS[0].pos);
+  const camTargetLook = new THREE.Vector3().fromArray(KEYS[0].look);
+  const camLook = camTargetLook.clone();
+  let fogFarTarget = KEYS[0].fogFar;
+
+  let scrollP = 0;
+  function onScroll() {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    scrollP = max > 0 ? window.scrollY / max : 0;
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  function updateCameraTargets() {
+    const segs = KEYS.length - 1;
+    const f = Math.min(scrollP, 0.9999) * segs;
+    const i = Math.floor(f);
+    const t = smooth(f - i);
+    const a = KEYS[i], b = KEYS[Math.min(i + 1, segs)];
+    camTargetPos.fromArray(a.pos).lerp(v.fromArray(b.pos), t);
+    camTargetLook.fromArray(a.look).lerp(v.fromArray(b.look), t);
+    fogFarTarget = a.fogFar + (b.fogFar - a.fogFar) * t;
+  }
+
+  // ── MOUSE PARALLAX ──
+  let mx = 0, my = 0;
+  window.addEventListener('pointermove', e => {
+    mx = (e.clientX / window.innerWidth - 0.5) * 2;
+    my = (e.clientY / window.innerHeight - 0.5) * 2;
+  }, { passive: true });
+
+  // ── RENDER LOOP ──
+  const clock = new THREE.Clock();
+  let elapsed = 0;
+
+  function tick() {
+    const dt = Math.min(clock.getDelta(), 0.05);
+    elapsed += dt;
+    const damp = 1 - Math.exp(-(reduceMotion ? 12 : 3.2) * dt);
+
+    updateCameraTargets();
+
+    // breathing stone: displace points along their radius, 4-6 breath rhythm
+    const breath = Math.sin(elapsed * 0.62);
+    const pos = stoneGeo.attributes.position.array;
+    for (let i = 0; i < pos.length; i += 3) {
+      const x = basePos[i], y = basePos[i + 1], z = basePos[i + 2];
+      const len = Math.sqrt(x * x + y * y + z * z) || 1;
+      const wob = Math.sin(elapsed * 0.9 + len * 2.4 + x * 0.7 + y * 0.5) * 0.14;
+      const s = 1 + breath * 0.05 + wob / len;
+      pos[i] = x * s; pos[i + 1] = y * s; pos[i + 2] = z * s;
+    }
+    stoneGeo.attributes.position.needsUpdate = true;
+    stoneWire.scale.setScalar(1 + breath * 0.05);
+    core.material.emissiveIntensity = 0.7 + breath * 0.35;
+    stoneGroup.rotation.y += dt * 0.06;
+
+    // dust drift
+    dust.rotation.y = elapsed * 0.02;
+    dust.material.opacity = 0.55 + Math.sin(elapsed * 0.62) * 0.2;
+
+    // knot: slow continuous rotation, like an endless vinyasa
+    knot.rotation.x = elapsed * 0.14;
+    knot.rotation.y = elapsed * 0.1;
+    knotHalo.rotation.x = -elapsed * 0.09;
+    knotHalo.rotation.y = elapsed * 0.12;
+
+    // ripples: expand + fade, then reset
+    ripples.forEach((r, i) => {
+      const t = (elapsed * 0.4 + r.userData.phase) % (Math.PI * 2);
+      const g = (Math.sin(t) + 1) / 2;
+      r.scale.setScalar(0.85 + g * 0.3);
+      r.material.opacity = 0.55 * (1 - g * 0.75);
+    });
+    waterDrop.position.z = Math.sin(elapsed * 0.62) * 0.5;
+
+    // camera: damped follow + parallax
+    camera.position.lerp(camTargetPos, damp);
+    camLook.lerp(camTargetLook, damp);
+    camera.lookAt(camLook);
+    camera.position.x += mx * 0.35 * (1 - Math.abs(mx) * 0.2);
+    camera.position.y += -my * 0.25;
+
+    scene.fog.far += (fogFarTarget - scene.fog.far) * damp;
+    lantern.position.copy(camera.position);
+
+    renderer.render(scene, camera);
+    requestAnimationFrame(tick);
+  }
+  tick();
+
+  // ── RESIZE ──
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  // ── PANEL REVEAL + PROGRESS DOTS ──
+  const sections = Array.from(document.querySelectorAll('section'));
+  const progress = document.getElementById('progress');
+  const dots = sections.map((sec, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => sec.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }));
+    progress.appendChild(d);
+    return d;
+  });
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      e.target.classList.toggle('lit', e.isIntersecting);
+      if (e.isIntersecting) {
+        const idx = sections.indexOf(e.target);
+        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+      }
+    });
+  }, { threshold: 0.45 });
+  sections.forEach(s => io.observe(s));
+})();
+</script>
+</body>
+</html>
