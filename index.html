@@ -1,327 +1,1234 @@
 <!DOCTYPE html>
+<!-- William Tsang — portfolio -->
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>William Tsang — Senior Software Engineer</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>William Tsang — Senior Software Engineer</title>
+<meta name="description" content="Senior Software Engineer in San Francisco. 10+ years building resilient systems; 5-year specialization in large-scale Elasticsearch infrastructure, distributed pipelines, and AI-augmented DevOps." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0c;
+    --bg-raise: #101014;
+    --surface: rgba(255, 255, 255, 0.03);
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.14);
+    --text: #ededf0;
+    --text-2: #9b9ba4;
+    --text-3: #63636d;
+    --accent: #7c9cff;
+    --accent-soft: rgba(124, 156, 255, 0.12);
+    --green: #4ade80;
+    --sans: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --radius: 14px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-weight: 400;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection { background: var(--accent); color: #0a0a0c; }
+
+  /* ── BACKDROP ── */
+  .backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: -3;
+    background:
+      radial-gradient(600px 400px at 75% -10%, rgba(124, 156, 255, 0.13), transparent 65%),
+      radial-gradient(800px 500px at 15% 110%, rgba(124, 156, 255, 0.06), transparent 65%),
+      var(--bg);
+  }
+  .backdrop::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, black 20%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, black 20%, transparent 75%);
+  }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 28px; }
+
+  /* ── NAV ── */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 50;
+    border-bottom: 1px solid transparent;
+    transition: background 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease;
+  }
+  header.scrolled {
+    background: rgba(10, 10, 12, 0.72);
+    border-bottom-color: var(--border);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+  .brand {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  .brand span { color: var(--accent); }
+  .nav-links { display: flex; gap: 6px; list-style: none; }
+  .nav-links a {
+    padding: 7px 13px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    color: var(--text-2);
+    text-decoration: none;
+    transition: color 0.2s, background 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); background: var(--surface); }
+  .nav-links a.active { color: var(--text); }
+  .nav-cta {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--bg);
+    background: var(--text);
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .nav-cta:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 92vh;
+    display: flex;
+    align-items: center;
+    padding-top: 64px;
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--green);
+    background: rgba(74, 222, 128, 0.08);
+    border: 1px solid rgba(74, 222, 128, 0.22);
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 28px;
+  }
+  .pill .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2.2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.45); }
+    50% { box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); }
+  }
+  h1 {
+    font-size: clamp(44px, 7vw, 84px);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1.02;
+  }
+  h1 .grad {
+    background: linear-gradient(100deg, var(--accent), #b8a7ff 60%, #7c9cff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero-sub {
+    margin-top: 22px;
+    font-size: clamp(16px, 1.6vw, 19px);
+    color: var(--text-2);
+    max-width: 640px;
+    line-height: 1.75;
+  }
+  .hero-sub strong { color: var(--text); font-weight: 500; }
+  .hero-actions { display: flex; gap: 14px; margin-top: 38px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 26px;
+    border-radius: 10px;
+    font-size: 14.5px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .btn-primary {
+    background: var(--text);
+    color: var(--bg);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(237, 237, 240, 0.15); }
+  .btn-ghost {
+    color: var(--text);
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+  }
+  .btn-ghost:hover { border-color: var(--text-3); transform: translateY(-2px); }
+  .hero-meta {
+    display: flex;
+    gap: 34px;
+    margin-top: 60px;
+    flex-wrap: wrap;
+  }
+  .hero-meta .m .num {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .hero-meta .m .lbl {
+    font-size: 12.5px;
+    color: var(--text-3);
+    margin-top: 2px;
+  }
+
+  /* ── SECTIONS ── */
+  section { padding: 110px 0; }
+  .sec-head { margin-bottom: 54px; }
+  .sec-tag {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+  }
+  .sec-title {
+    font-size: clamp(28px, 3.6vw, 42px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin-top: 10px;
+  }
+  .sec-desc { color: var(--text-2); margin-top: 12px; max-width: 560px; font-size: 15.5px; }
+
+  /* ── CARDS (shared) ── */
+  .card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    transition: border-color 0.3s, transform 0.3s, background 0.3s;
+    overflow: hidden;
+  }
+  .card:hover { border-color: var(--border-strong); transform: translateY(-3px); }
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(420px circle at var(--gx, 50%) var(--gy, 50%), var(--accent-soft), transparent 65%);
+    opacity: 0;
+    transition: opacity 0.4s;
+    pointer-events: none;
+  }
+  .card:hover::before { opacity: 1; }
+
+  /* ── ABOUT ── */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 56px;
+    align-items: start;
+  }
+  .about-prose p { color: var(--text-2); font-size: 15.5px; line-height: 1.85; }
+  .about-prose p + p { margin-top: 20px; }
+  .about-prose strong { color: var(--text); font-weight: 500; }
+  .about-card .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 0;
+    font-size: 14px;
+  }
+  .about-card .row + .row { border-top: 1px solid var(--border); }
+  .about-card .k { color: var(--text-3); }
+  .about-card .v { color: var(--text); font-weight: 500; text-align: right; }
+  .about-card .v.mono { font-family: var(--mono); font-size: 13px; }
+
+  /* ── EXPERIENCE ── */
+  .xp { display: flex; flex-direction: column; gap: 20px; }
+  .xp-company {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+  .xp-company .name { font-size: 21px; font-weight: 600; letter-spacing: -0.02em; }
+  .xp-company .meta { font-family: var(--mono); font-size: 12.5px; color: var(--text-3); }
+  .role { padding: 24px 28px; }
+  .role-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .role-title { font-size: 16px; font-weight: 600; }
+  .role-period {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 3px 10px;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+  .role ul { margin-top: 16px; list-style: none; }
+  .role li {
+    position: relative;
+    padding-left: 22px;
+    color: var(--text-2);
+    font-size: 14.5px;
+    line-height: 1.7;
+  }
+  .role li + li { margin-top: 10px; }
+  .role li::before {
+    content: '';
+    position: absolute;
+    left: 4px; top: 10px;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.7;
+  }
+  .role li strong { color: var(--text); font-weight: 500; }
+
+  /* ── SKILLS ── */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .skill-card .head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .skill-card .head .ic {
+    width: 34px; height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 9px;
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .skill-card .head .t { font-size: 15px; font-weight: 600; }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tag {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--text-2);
+    background: var(--bg-raise);
+    border: 1px solid var(--border);
+    padding: 5px 12px;
+    border-radius: 7px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .tag:hover { color: var(--text); border-color: var(--accent); }
+
+  /* ── PROJECTS / EDUCATION ── */
+  .duo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .proj-status {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.08);
+    border: 1px solid rgba(251, 191, 36, 0.25);
+    padding: 3px 10px;
+    border-radius: 100px;
+  }
+  .edu-year { font-family: var(--mono); font-size: 12.5px; color: var(--accent); }
+  .edu-degree { font-size: 16.5px; font-weight: 600; margin-top: 10px; }
+  .edu-school { font-size: 13.5px; color: var(--text-2); margin-top: 3px; }
+  .edu-desc { font-size: 13.5px; color: var(--text-3); margin-top: 14px; line-height: 1.7; }
+
+  /* ── CONTACT ── */
+  #contact { padding-bottom: 90px; }
+  .contact-box {
+    text-align: center;
+    padding: 84px 28px;
+    background:
+      radial-gradient(500px 240px at 50% 0%, rgba(124, 156, 255, 0.10), transparent 70%),
+      var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+  }
+  .contact-box h2 {
+    font-size: clamp(30px, 4.4vw, 52px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+  .contact-box p {
+    color: var(--text-2);
+    max-width: 460px;
+    margin: 18px auto 0;
+    font-size: 15.5px;
+  }
+  .contact-actions {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    margin-top: 36px;
+    flex-wrap: wrap;
+  }
+  .contact-line {
+    margin-top: 34px;
+    display: flex;
+    gap: 26px;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+  .contact-line a {
+    color: var(--text-2);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .contact-line a:hover { color: var(--accent); }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 30px 0;
+  }
+  footer .wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-3);
+  }
+  footer .mono { font-family: var(--mono); font-size: 12px; }
+
+  /* ── 3D CANVAS + AURORA ── */
+  #net {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+  .aurora {
+    position: fixed;
+    z-index: -2;
+    width: 55vw;
+    height: 55vw;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .aurora.a1 {
+    top: -22vw; right: -12vw;
+    background: radial-gradient(circle, rgba(124,156,255,0.20), transparent 65%);
+    animation: drift1 26s ease-in-out infinite alternate;
+  }
+  .aurora.a2 {
+    bottom: -28vw; left: -16vw;
+    background: radial-gradient(circle, rgba(184,167,255,0.13), transparent 65%);
+    animation: drift2 32s ease-in-out infinite alternate;
+  }
+  @keyframes drift1 {
+    from { transform: translate(0, 0) scale(1); }
+    to   { transform: translate(-9vw, 7vw) scale(1.15); }
+  }
+  @keyframes drift2 {
+    from { transform: translate(0, 0) scale(1.1); }
+    to   { transform: translate(8vw, -6vw) scale(0.95); }
+  }
+
+  /* ── HERO SEARCH WIDGET ── */
+  .search-widget {
+    margin-top: 40px;
+    max-width: 620px;
+    position: relative;
+  }
+  .search-bar {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 16px 20px;
+    background: rgba(16, 16, 20, 0.75);
+    border: 1px solid var(--border-strong);
+    border-radius: 14px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 0 0 1px rgba(124,156,255,0), 0 18px 50px rgba(0,0,0,0.45);
+    transition: box-shadow 0.4s, border-color 0.4s;
+  }
+  .search-widget.live .search-bar {
+    border-color: rgba(124, 156, 255, 0.45);
+    box-shadow: 0 0 0 3px rgba(124,156,255,0.10), 0 18px 50px rgba(0,0,0,0.45);
+  }
+  .search-bar .mag { color: var(--accent); flex: none; display: grid; place-items: center; }
+  .search-q {
+    font-family: var(--mono);
+    font-size: 14.5px;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .search-q .caret {
+    display: inline-block;
+    width: 8px;
+    height: 17px;
+    margin-left: 2px;
+    background: var(--accent);
+    vertical-align: text-bottom;
+    animation: blink 1.05s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  .search-bar kbd {
+    margin-left: auto;
+    flex: none;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 8px;
+    background: var(--surface);
+  }
+  .search-results {
+    margin-top: 10px;
+    background: rgba(16, 16, 20, 0.82);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+  }
+  .search-results .hits {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--text-3);
+    padding: 10px 18px 6px;
+    letter-spacing: 0.04em;
+  }
+  .hit {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 18px;
+    text-decoration: none;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: background 0.2s;
+  }
+  .hit.show {
+    animation: hitIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  @keyframes hitIn { to { opacity: 1; transform: none; } }
+  .hit:hover { background: var(--accent-soft); }
+  .hit .h-ic {
+    flex: none;
+    width: 28px; height: 28px;
+    display: grid;
+    place-items: center;
+    border-radius: 7px;
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .hit .h-body { min-width: 0; }
+  .hit .h-title { font-size: 13.5px; font-weight: 500; color: var(--text); }
+  .hit .h-sub { font-family: var(--mono); font-size: 11px; color: var(--text-3); margin-top: 1px; }
+  .hit .h-score {
+    margin-left: auto;
+    flex: none;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+  }
+
+  /* ── REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(26px);
+    transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .reveal.in { opacity: 1; transform: none; }
+
+  @media (max-width: 860px) {
+    .nav-links { display: none; }
+    .about-grid, .skills-grid, .duo-grid { grid-template-columns: 1fr; }
+    section { padding: 80px 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .reveal { transition: none; opacity: 1; transform: none; }
+    .pill .dot { animation: none; }
+    .aurora { animation: none; }
+  }
+</style>
 </head>
 <body>
 
-  <!-- NAV -->
-  <nav>
-    <div class="nav-logo">williamktsang<span>.</span>us</div>
+<div class="backdrop"></div>
+<div class="aurora a1"></div>
+<div class="aurora a2"></div>
+<canvas id="net"></canvas>
+
+<header id="header">
+  <div class="wrap nav">
+    <a class="brand" href="#hero">williamktsang<span>.us</span></a>
     <ul class="nav-links">
       <li><a href="#about">About</a></li>
-      <li><a href="#skills">Skills</a></li>
       <li><a href="#experience">Experience</a></li>
+      <li><a href="#skills">Stack</a></li>
       <li><a href="#projects">Projects</a></li>
       <li><a href="#education">Education</a></li>
-      <li><a href="#contact">Contact</a></li>
     </ul>
-  </nav>
+    <a class="nav-cta" href="mailto:will.ktsang@gmail.com">Get in touch</a>
+  </div>
+</header>
 
-  <!-- HERO -->
-  <section id="hero">
-    <div class="hero-content">
-      <div class="hero-label">Available for new opportunities</div>
-      <h1 class="hero-name">
-        <span class="first">William </span><br>
-        <span class="last">Tsang</span>
-      </h1>
-      <div class="hero-title">Senior Software Engineer<span class="cursor"></span></div>
-      <p class="hero-desc">
-        10+ years building resilient, high-performance systems. 5-year specialization in large-scale
-        Elasticsearch infrastructure, distributed pipelines, and AI-augmented DevOps workflows.
-      </p>
-      <div class="hero-cta">
-        <a href="#experience" class="btn btn-primary">View Experience</a>
-        <a href="#contact" class="btn btn-outline">Get In Touch</a>
+<!-- HERO -->
+<section id="hero">
+  <div class="wrap">
+    <div class="pill"><span class="dot"></span>Available for new opportunities</div>
+    <h1>William Tsang.<br><span class="grad">I keep search fast</span><br>and systems calm.</h1>
+    <p class="hero-sub">
+      Senior Software Engineer in San Francisco. <strong>10+ years</strong> building resilient,
+      high-performance systems — the last five running <strong>large-scale Elasticsearch
+      infrastructure</strong>, distributed pipelines, and AI-augmented DevOps workflows at Zendesk.
+    </p>
+    <div class="search-widget" id="searchWidget">
+      <div class="search-bar">
+        <span class="mag">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </span>
+        <span class="search-q" id="searchQ"><span class="caret"></span></span>
+        <kbd>williamktsang.us</kbd>
       </div>
-      <div class="hero-badges">
-        <span class="badge badge-cyan">Search Infrastructure</span>
-        <span class="badge badge-purple">Platform Engineering</span>
-        <span class="badge badge-green">AI Workflow Integration</span>
-        <span class="badge badge-cyan">DevOps / SRE</span>
+      <div class="search-results" id="searchResults" hidden>
+        <div class="hits" id="searchHits"></div>
+        <div id="hitList"></div>
       </div>
     </div>
-  </section>
-
-  <!-- ABOUT -->
-  <section id="about">
-    <div class="section-header fade-in">
-      <span class="section-num">01</span>
-      <h2 class="section-title">About</h2>
-      <div class="section-line"></div>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#experience">View experience</a>
+      <a class="btn btn-ghost" href="mailto:will.ktsang@gmail.com">will.ktsang@gmail.com</a>
     </div>
-    <div class="about-grid fade-in">
-      <div class="about-text">
+    <div class="hero-meta">
+      <div class="m"><div class="num">10+</div><div class="lbl">Years engineering</div></div>
+      <div class="m"><div class="num">5 yrs</div><div class="lbl">Search infrastructure</div></div>
+      <div class="m"><div class="num">11 yrs</div><div class="lbl">At Zendesk, 3 roles</div></div>
+      <div class="m"><div class="num">SF</div><div class="lbl">Remote-friendly</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-tag">01 — About</div>
+      <h2 class="sec-title">Platform reliability meets developer experience</h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-prose reveal">
         <p>
-          I'm a <strong>Senior Software Engineer</strong> based in San Francisco with over a decade of experience
-          building and scaling production systems. My deepest expertise is in <strong>large-scale Elasticsearch
-          infrastructure</strong> — managing global cluster lifecycles, automating deployments, and optimizing
-          distributed indexing pipelines.
+          I'm a <strong>Senior Software Engineer</strong> with over a decade of experience building
+          and scaling production systems. My deepest expertise is in <strong>large-scale
+          Elasticsearch infrastructure</strong> — managing global cluster lifecycles, automating
+          deployments, and optimizing distributed indexing pipelines.
         </p>
         <p>
-          Most recently at <strong>Zendesk</strong> (2015–2026), I evolved from a Web Applications Developer
-          building customer-facing UI to a Search Infrastructure Engineer owning mission-critical systems
+          At <strong>Zendesk</strong> (2015–2026) I grew from a Web Applications Developer building
+          customer-facing UI into a Search Infrastructure Engineer owning mission-critical systems
           globally. I thrive at the intersection of platform reliability and developer experience.
         </p>
         <p>
-          I'm actively integrating <strong>AI-driven workflows</strong> — Cursor, Claude Code, and MCP agents —
-          into the development lifecycle to accelerate delivery and ops efficiency. Currently seeking my next
-          challenge in <strong>DevOps, platform engineering, or search infrastructure</strong>.
+          Today I actively integrate <strong>AI-driven workflows</strong> — Cursor, Claude Code, and
+          MCP agents — into the development lifecycle to accelerate delivery and ops efficiency.
+          I'm looking for my next challenge in <strong>DevOps, platform engineering, or search
+          infrastructure</strong>.
         </p>
-
-        <div class="terminal">
-          <div class="terminal-bar">
-            <div class="dot dot-r"></div>
-            <div class="dot dot-y"></div>
-            <div class="dot dot-g"></div>
-          </div>
-          <div class="terminal-line"><span class="cmd">$ </span><span class="highlight">whoami</span></div>
-          <div class="terminal-line"><span class="out">william.tsang — senior-swe / search-infra</span></div>
-          <div class="terminal-line"><span class="cmd">$ </span><span class="highlight">cat status.txt</span></div>
-          <div class="terminal-line"><span class="out">open to: devops · platform-eng · search-infra</span></div>
-          <div class="terminal-line"><span class="cmd">$ </span><span class="highlight">echo $LOCATION</span></div>
-          <div class="terminal-line"><span class="out">San Francisco, CA</span></div>
-          <div class="terminal-line comment"># Ready to ship</div>
-        </div>
       </div>
-
-      <div class="about-stats">
-        <div class="stat-card fade-in">
-          <div class="stat-num">10+</div>
-          <div class="stat-label">Years Experience</div>
-        </div>
-        <div class="stat-card fade-in">
-          <div class="stat-num">5yr</div>
-          <div class="stat-label">Search Infra Focus</div>
-        </div>
+      <div class="card about-card reveal">
+        <div class="row"><span class="k">Role</span><span class="v">Senior Software Engineer</span></div>
+        <div class="row"><span class="k">Focus</span><span class="v">Search Infra · DevOps</span></div>
+        <div class="row"><span class="k">Location</span><span class="v">San Francisco, CA</span></div>
+        <div class="row"><span class="k">Experience</span><span class="v">10+ years</span></div>
+        <div class="row"><span class="k">Status</span><span class="v" style="color:var(--green)">Open to offers</span></div>
+        <div class="row"><span class="k">Email</span><span class="v mono">will.ktsang@gmail.com</span></div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- SKILLS -->
-  <section id="skills">
-    <div class="section-header fade-in">
-      <span class="section-num">02</span>
-      <h2 class="section-title">Tech Stack</h2>
-      <div class="section-line"></div>
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-tag">02 — Experience</div>
+      <h2 class="sec-title">Where I've shipped</h2>
+    </div>
+
+    <div class="xp">
+      <div class="xp-company reveal">
+        <span class="name">Zendesk</span>
+        <span class="meta">San Francisco · Jun 2015 — Apr 2026</span>
+      </div>
+
+      <div class="card role reveal">
+        <div class="role-head">
+          <div class="role-title">Senior Software Engineer — Search Infrastructure</div>
+          <div class="role-period">2021 — 2026</div>
+        </div>
+        <ul>
+          <li><strong>Global Elasticsearch lifecycle management</strong> with blue/green deployments for zero-impact traffic cutover.</li>
+          <li><strong>Automated cluster orchestration</strong> via a Python Falcon web app and Apache Airflow DAGs for complex task flows.</li>
+          <li><strong>Parallelized distributed indexing pipelines</strong> — concurrent document processing that significantly cut cluster build times and cloud costs.</li>
+          <li><strong>RBAC permissions for cluster builds</strong>, streamlining feature rollouts to GA and improving developer experience.</li>
+          <li><strong>Chef cookbook maintenance</strong> for infrastructure immutability — strategic tagging and scripting for repeatable deployments.</li>
+          <li><strong>Proactive incident management</strong>: daily health dashboards, precursor identification, and on-call escalation.</li>
+          <li><strong>Security compliance</strong> via Wiz AMI vulnerability reviews and SLA/SLO adherence.</li>
+          <li><strong>AI agent integration</strong> (Cursor, Claude Code, MCP skills) across the full feature development lifecycle.</li>
+          <li><strong>Documentation standards</strong> — infra design docs, microservice architecture specs, incident runbooks.</li>
+        </ul>
+      </div>
+
+      <div class="card role reveal">
+        <div class="role-head">
+          <div class="role-title">Senior Platform Services Engineer</div>
+          <div class="role-period">2018 — 2021</div>
+        </div>
+        <ul>
+          <li><strong>End-to-end data migration tooling</strong> — evolved scripts into a robust web application with persistent storage.</li>
+          <li><strong>Metadata and full-instance copy services</strong> built with cross-functional teams, driving additional departmental revenue.</li>
+          <li><strong>Complex customer go-live migrations</strong> under strict data-integrity requirements and minimal-downtime SLAs.</li>
+          <li><strong>Multi-threaded migration pipelines</strong> to scale throughput and meet customer timelines.</li>
+          <li>Tackled undiscovered product areas to retain at-risk and churning customers.</li>
+        </ul>
+      </div>
+
+      <div class="card role reveal">
+        <div class="role-head">
+          <div class="role-title">Web Applications Developer</div>
+          <div class="role-period">2015 — 2018</div>
+        </div>
+        <ul>
+          <li>Designed and shipped <strong>user-facing components</strong> for the customer Help Center, improving UI/UX and CSAT scores.</li>
+          <li>Partnered with designers and stakeholders to take <strong>MVPs to production-ready products</strong>.</li>
+        </ul>
+      </div>
+
+      <div class="xp-company reveal" style="margin-top:26px;">
+        <span class="name">Uniquify</span>
+        <span class="meta">San Jose · Jan 2013 — Sep 2014</span>
+      </div>
+      <div class="card role reveal">
+        <div class="role-head">
+          <div class="role-title">ASIC Physical Design Engineer</div>
+          <div class="role-period">2013 — 2014</div>
+        </div>
+        <ul>
+          <li>Optimized <strong>block-level layered metal routing</strong> for clock tree synthesis and timing targets.</li>
+          <li>Verified <strong>DRC and LVS sign-off</strong> during project tape-out periods.</li>
+        </ul>
+      </div>
+
+      <div class="xp-company reveal" style="margin-top:26px;">
+        <span class="name">Revel Systems</span>
+        <span class="meta">San Francisco · Feb 2012 — Dec 2012</span>
+      </div>
+      <div class="card role reveal">
+        <div class="role-head">
+          <div class="role-title">Technical Support Engineer</div>
+          <div class="role-period">2012</div>
+        </div>
+        <ul>
+          <li>On-site client launches for seamless support experiences.</li>
+          <li>Networking and TCP/IP troubleshooting on field devices.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-tag">03 — Stack</div>
+      <h2 class="sec-title">Tools I reach for</h2>
     </div>
     <div class="skills-grid">
-      <div class="skill-group fade-in">
-        <div class="skill-group-title">// Languages</div>
-        <div class="skill-tags">
-          <span class="skill-tag">Python</span>
-          <span class="skill-tag">Ruby</span>
-          <span class="skill-tag">JavaScript</span>
-          <span class="skill-tag">HTML/CSS</span>
+      <div class="card skill-card reveal">
+        <div class="head">
+          <div class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+          <div class="t">Languages</div>
         </div>
+        <div class="tags"><span class="tag">Python</span><span class="tag">Ruby</span><span class="tag">JavaScript</span><span class="tag">HTML/CSS</span></div>
       </div>
-      <div class="skill-group fade-in">
-        <div class="skill-group-title">// Databases &amp; Tools</div>
-        <div class="skill-tags">
-          <span class="skill-tag">Elasticsearch</span>
-          <span class="skill-tag">PostgreSQL</span>
-          <span class="skill-tag">MySQL</span>
-          <span class="skill-tag">DynamoDB</span>
-          <span class="skill-tag">Aurora</span>
-          <span class="skill-tag">Redis</span>
-          <span class="skill-tag">Apache Airflow</span>
-          <span class="skill-tag">Nginx</span>
-          <span class="skill-tag">Cerebro</span>
+      <div class="card skill-card reveal">
+        <div class="head">
+          <div class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg></div>
+          <div class="t">Databases &amp; Tools</div>
         </div>
+        <div class="tags"><span class="tag">Elasticsearch</span><span class="tag">PostgreSQL</span><span class="tag">MySQL</span><span class="tag">DynamoDB</span><span class="tag">Aurora</span><span class="tag">Redis</span><span class="tag">Apache Airflow</span><span class="tag">Nginx</span><span class="tag">Cerebro</span></div>
       </div>
-      <div class="skill-group fade-in">
-        <div class="skill-group-title">// Cloud &amp; DevOps</div>
-        <div class="skill-tags">
-          <span class="skill-tag">AWS</span>
-          <span class="skill-tag">Kubernetes</span>
-          <span class="skill-tag">Terraform</span>
-          <span class="skill-tag">Chef</span>
-          <span class="skill-tag">CI/CD</span>
-          <span class="skill-tag">Spinnaker</span>
-          <span class="skill-tag">Datadog</span>
+      <div class="card skill-card reveal">
+        <div class="head">
+          <div class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19a4.5 4.5 0 1 0 0-9h-1.8A7 7 0 1 0 4 14.9"/></svg></div>
+          <div class="t">Cloud &amp; DevOps</div>
         </div>
+        <div class="tags"><span class="tag">AWS</span><span class="tag">Kubernetes</span><span class="tag">Terraform</span><span class="tag">Chef</span><span class="tag">CI/CD</span><span class="tag">Spinnaker</span><span class="tag">Datadog</span></div>
       </div>
-      <div class="skill-group fade-in">
-        <div class="skill-group-title">// AI &amp; Workflow</div>
-        <div class="skill-tags">
-          <span class="skill-tag">Claude Code</span>
-          <span class="skill-tag">Cursor</span>
-          <span class="skill-tag">MCP Agents</span>
-          <span class="skill-tag">JIRA</span>
-          <span class="skill-tag">Confluence</span>
+      <div class="card skill-card reveal">
+        <div class="head">
+          <div class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4c0 1.95-1.4 3.58-3.25 3.93L12 10l-.75-.07A4.001 4.001 0 0 1 12 2z"/><path d="M5 22v-3a7 7 0 0 1 14 0v3"/><circle cx="12" cy="6" r="1"/></svg></div>
+          <div class="t">AI &amp; Workflow</div>
         </div>
+        <div class="tags"><span class="tag">Claude Code</span><span class="tag">Cursor</span><span class="tag">MCP Agents</span><span class="tag">JIRA</span><span class="tag">Confluence</span></div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- EXPERIENCE -->
-  <section id="experience">
-    <div class="section-header fade-in">
-      <span class="section-num">03</span>
-      <h2 class="section-title">Experience</h2>
-      <div class="section-line"></div>
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-tag">04 — Projects</div>
+      <h2 class="sec-title">Building in the open</h2>
     </div>
-
-    <div class="timeline">
-
-      <!-- ZENDESK -->
-      <div class="timeline-item fade-in">
-        <div class="timeline-company">Zendesk</div>
-        <div class="timeline-meta">San Francisco, CA &nbsp;·&nbsp; June 2015 – April 2026</div>
-
-        <div class="timeline-role">
-          <div class="timeline-role-title">Senior Software Engineer — Search Infrastructure</div>
-          <div class="timeline-role-period">2021 – 2026</div>
-          <ul>
-            <li><strong>Global Elasticsearch lifecycle management</strong> using blue/green deployment strategies for zero-impact traffic cutover.</li>
-            <li><strong>Automated cluster orchestration</strong> via a Python Falcon framework web app and Apache Airflow DAGs for complex task flows.</li>
-            <li><strong>Parallelized distributed indexing pipelines</strong> — architected concurrent document processing jobs, significantly reducing cluster build times and cloud costs.</li>
-            <li><strong>Role-based RBAC permissions</strong> for cluster builds, streamlining feature rollouts to GA and enhancing developer experience.</li>
-            <li><strong>Chef cookbook maintenance</strong> for infrastructure immutability — strategic tagging and scripting for consistent, repeatable deployments.</li>
-            <li><strong>Proactive incident management</strong> via daily health dashboard monitoring, precursor identification, and on-call escalation.</li>
-            <li><strong>Security compliance</strong> via Wiz dashboard AMI vulnerability reviews and SLA/SLO adherence.</li>
-            <li><strong>AI agent integration</strong> (Cursor, Claude Code, MCP skills) into the full feature development lifecycle for accelerated throughput.</li>
-            <li><strong>Documentation standards</strong> — infrastructure design docs, microservice architecture specs, and incident runbooks.</li>
-          </ul>
+    <div class="duo-grid">
+      <div class="card reveal">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+          <div style="font-size:16.5px;font-weight:600;">Project in progress</div>
+          <span class="proj-status">In progress</span>
         </div>
-
-        <div class="timeline-role">
-          <div class="timeline-role-title">Senior Platform Services Engineer</div>
-          <div class="timeline-role-period">2018 – 2021</div>
-          <ul>
-            <li><strong>End-to-end data migration tooling</strong> — evolved scripts into a robust web application with persistent database storage.</li>
-            <li><strong>Metadata and full-instance copy services</strong> developed with cross-functional teams, driving additional departmental revenue.</li>
-            <li><strong>Complex customer go-live migrations</strong> with strict data integrity requirements and minimal downtime SLAs.</li>
-            <li><strong>Multi-threaded migration pipelines</strong> to scale throughput and meet customer timelines.</li>
-            <li>Tackled undiscovered product areas to retain at-risk and churning customers.</li>
-          </ul>
-        </div>
-
-        <div class="timeline-role">
-          <div class="timeline-role-title">Web Applications Developer</div>
-          <div class="timeline-role-period">2015 – 2018</div>
-          <ul>
-            <li>Designed and developed <strong>user-facing components</strong> for the customer Help Center, improving UI/UX and CSAT scores.</li>
-            <li>Partnered with designers and stakeholders to ship <strong>MVPs to production-ready products</strong>.</li>
-          </ul>
-        </div>
+        <p style="color:var(--text-2);font-size:14px;margin-top:14px;">Something is brewing. Details coming soon.</p>
+        <div class="tags" style="margin-top:18px;"><span class="tag">TBD</span></div>
       </div>
-
-      <!-- UNIQUIFY -->
-      <div class="timeline-item fade-in">
-        <div class="timeline-company">Uniquify</div>
-        <div class="timeline-meta">San Jose, CA &nbsp;·&nbsp; January 2013 – September 2014</div>
-        <div class="timeline-role">
-          <div class="timeline-role-title">ASIC Physical Design Engineer</div>
-          <div class="timeline-role-period">2013 – 2014</div>
-          <ul>
-            <li>Optimized <strong>block-level layered metal routing</strong> for clock tree synthesis and timing targets.</li>
-            <li>Verified <strong>DRC and LVS sign-off</strong> during project tape-out periods.</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- REVEL -->
-      <div class="timeline-item fade-in">
-        <div class="timeline-company">Revel Systems</div>
-        <div class="timeline-meta">San Francisco, CA &nbsp;·&nbsp; February 2012 – December 2012</div>
-        <div class="timeline-role">
-          <div class="timeline-role-title">Technical Support Engineer</div>
-          <div class="timeline-role-period">2012</div>
-          <ul>
-            <li>On-site client launches for seamless support experiences.</li>
-            <li>Networking and TCP/IP troubleshooting on field devices.</li>
-          </ul>
-        </div>
-      </div>
-
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- PROJECTS -->
-  <section id="projects">
-    <div class="section-header fade-in">
-      <span class="section-num">04</span>
-      <h2 class="section-title">Projects</h2>
-      <div class="section-line"></div>
+<!-- EDUCATION -->
+<section id="education">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-tag">05 — Education</div>
+      <h2 class="sec-title">Foundations</h2>
     </div>
-    <div class="projects-grid">
-
-      <div class="project-card fade-in">
-        <div class="project-card-header">
-          <div class="project-name">Project In Progress</div>
-          <span class="project-status status-wip">In Progress</span>
-        </div>
-        <p class="project-desc">Something is brewing. Details coming soon.</p>
-        <div class="project-tags">
-          <span class="project-tag">TBD</span>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- EDUCATION -->
-  <section id="education">
-    <div class="section-header fade-in">
-      <span class="section-num">05</span>
-      <h2 class="section-title">Education</h2>
-      <div class="section-line"></div>
-    </div>
-    <div class="edu-grid">
-      <div class="edu-card fade-in">
+    <div class="duo-grid">
+      <div class="card reveal">
         <div class="edu-year">2011</div>
         <div class="edu-degree">B.S. Electrical Engineering</div>
         <div class="edu-school">San Francisco State University</div>
-        <div class="edu-desc">Concentration in ASIC Design. Strong foundation in circuits, digital systems, and low-level hardware engineering.</div>
+        <p class="edu-desc">Concentration in ASIC Design. Strong foundation in circuits, digital systems, and low-level hardware engineering.</p>
       </div>
-      <div class="edu-card fade-in">
+      <div class="card reveal">
         <div class="edu-year">2015</div>
         <div class="edu-degree">Software Engineering Bootcamp</div>
         <div class="edu-school">Dev Bootcamp</div>
-        <div class="edu-desc">Intensive 19-week program covering core programming concepts, web development, pair programming, and engineering empathy.</div>
+        <p class="edu-desc">Intensive 19-week program covering core programming concepts, web development, pair programming, and engineering empathy.</p>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- CONTACT -->
-  <section id="contact">
-    <div class="contact-inner">
-      <div class="section-header fade-in" style="justify-content:center;">
-        <span class="section-num">06</span>
-        <h2 class="section-title">Contact</h2>
+<!-- CONTACT -->
+<section id="contact">
+  <div class="wrap">
+    <div class="contact-box reveal">
+      <div class="sec-tag" style="margin-bottom:16px;">06 — Contact</div>
+      <h2>Let's build something.</h2>
+      <p>Open to DevOps, platform engineering, and search infrastructure roles. Based in San Francisco — remote-friendly.</p>
+      <div class="contact-actions">
+        <a class="btn btn-primary" href="mailto:will.ktsang@gmail.com">Email me</a>
+        <a class="btn btn-ghost" href="https://github.com/williamtsang9" target="_blank" rel="noopener">GitHub</a>
       </div>
-      <h2 class="contact-title fade-in">Let's <span>build</span> something.</h2>
-      <p class="contact-desc fade-in">
-        Open to DevOps, platform engineering, and search infrastructure roles.
-        Based in San Francisco — remote-friendly.
-      </p>
-      <div class="contact-links fade-in">
-        <a href="mailto:will.ktsang@gmail.com" class="contact-item">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-          will.ktsang@gmail.com
-        </a>
-        <a href="tel:4152751437" class="contact-item">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.08 1.22h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21 16.92z"/></svg>
-          415-275-1437
-        </a>
-        <a href="https://github.com/williamtsang9" target="_blank" class="contact-item">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
-          github.com/williamtsang9
-        </a>
+      <div class="contact-line">
+        <a href="mailto:will.ktsang@gmail.com">will.ktsang@gmail.com</a>
+        <a href="tel:4152751437">415-275-1437</a>
+        <a href="https://github.com/williamtsang9" target="_blank" rel="noopener">github.com/williamtsang9</a>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- FOOTER -->
-  <footer>
-    <p>William Tsang &nbsp;·&nbsp; <span>San Francisco, CA</span></p>
-  </footer>
+<footer>
+  <div class="wrap">
+    <span>© 2026 William Tsang · San Francisco, CA</span>
+  </div>
+</footer>
 
-  <script src="main.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(() => {
+  'use strict';
+
+  // ── UI: sticky header ──
+  const header = document.getElementById('header');
+  const onScrollHeader = () => header.classList.toggle('scrolled', window.scrollY > 12);
+  window.addEventListener('scroll', onScrollHeader, { passive: true });
+  onScrollHeader();
+
+  // ── UI: scroll reveal ──
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // ── UI: active nav link ──
+  const sectionEls = document.querySelectorAll('section[id]');
+  const links = document.querySelectorAll('.nav-links a');
+  const navIO = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(a =>
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
+      }
+    });
+  }, { threshold: 0.4 });
+  sectionEls.forEach(s => navIO.observe(s));
+
+  // ── UI: card spotlight ──
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('pointermove', e => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--gx', ((e.clientX - r.left) / r.width * 100) + '%');
+      card.style.setProperty('--gy', ((e.clientY - r.top) / r.height * 100) + '%');
+    });
+  });
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ════════════════════════════════════════════════════════════
+     3D SCROLL JOURNEY — one neural network, one journey.
+     The camera approaches the "mind", slips inside it, drifts
+     past its glowing core, and pulls back to see the whole
+     constellation as you read.
+     ════════════════════════════════════════════════════════════ */
+
+  const COL = { accent: 0x7c9cff, purple: 0xb8a7ff, green: 0x4ade80, ink: 0xededf0, bg: 0x0a0a0c };
+
+  const canvas = document.getElementById('net');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x000000, 0); // let the CSS backdrop show through
+
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.Fog(COL.bg, 4, 70);
+
+  const camera = new THREE.PerspectiveCamera(58, window.innerWidth / window.innerHeight, 0.1, 500);
+  camera.position.set(0, 0.4, 2);
+
+  scene.add(new THREE.AmbientLight(COL.ink, 0.5));
+  const key = new THREE.DirectionalLight(COL.accent, 0.7);
+  key.position.set(5, 8, 3);
+  scene.add(key);
+  const lantern = new THREE.PointLight(COL.accent, 1.0, 45);
+  scene.add(lantern);
+
+  // ── 1. NODE NETWORK SPHERE (the cluster) ──
+  const NET_C = new THREE.Vector3(0, 0, -24);
+  const netGroup = new THREE.Group();
+  netGroup.position.copy(NET_C);
+  scene.add(netGroup);
+
+  const NODE_N = 230;
+  const nodePts = [];
+  for (let i = 0; i < NODE_N; i++) {
+    const r = 5.5 + Math.pow(Math.random(), 0.7) * 5.5;
+    const th = Math.random() * Math.PI * 2;
+    const ph = Math.acos(2 * Math.random() - 1);
+    nodePts.push(new THREE.Vector3(
+      r * Math.sin(ph) * Math.cos(th),
+      r * Math.sin(ph) * Math.sin(th),
+      r * Math.cos(ph)
+    ));
+  }
+  const nodeGeo = new THREE.BufferGeometry().setFromPoints(nodePts);
+  netGroup.add(new THREE.Points(nodeGeo, new THREE.PointsMaterial({
+    color: COL.accent, size: 0.14, transparent: true, opacity: 0.9,
+  })));
+
+  // static link segments, computed once
+  const linkVerts = [];
+  for (let i = 0; i < NODE_N; i++) {
+    for (let j = i + 1; j < NODE_N; j++) {
+      if (nodePts[i].distanceTo(nodePts[j]) < 3.6) {
+        linkVerts.push(nodePts[i].x, nodePts[i].y, nodePts[i].z,
+                       nodePts[j].x, nodePts[j].y, nodePts[j].z);
+      }
+    }
+  }
+  const linkGeo = new THREE.BufferGeometry();
+  linkGeo.setAttribute('position', new THREE.Float32BufferAttribute(linkVerts, 3));
+  netGroup.add(new THREE.LineSegments(linkGeo, new THREE.LineBasicMaterial({
+    color: COL.accent, transparent: true, opacity: 0.13, blending: THREE.AdditiveBlending,
+  })));
+
+  // glowing core at the heart of the cluster
+  const core = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(1.15, 1),
+    new THREE.MeshStandardMaterial({
+      color: COL.purple, emissive: COL.purple, emissiveIntensity: 1.1,
+      roughness: 0.35, metalness: 0.2,
+    })
+  );
+  netGroup.add(core);
+  const coreHalo = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(1.8, 1),
+    new THREE.MeshBasicMaterial({ color: COL.purple, wireframe: true, transparent: true, opacity: 0.22 })
+  );
+  netGroup.add(coreHalo);
+  const coreLight = new THREE.PointLight(COL.purple, 1.4, 26);
+  netGroup.add(coreLight);
+
+  // ── 2. AMBIENT STARFIELD along the whole journey ──
+  const STAR_N = 1800;
+  const starPos = new Float32Array(STAR_N * 3);
+  for (let i = 0; i < STAR_N; i++) {
+    starPos[i * 3] = (Math.random() - 0.5) * 110;
+    starPos[i * 3 + 1] = (Math.random() - 0.5) * 70;
+    starPos[i * 3 + 2] = 15 - Math.random() * 190;
+  }
+  const starGeo = new THREE.BufferGeometry();
+  starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+  scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({
+    color: COL.ink, size: 0.06, transparent: true, opacity: 0.38,
+  })));
+
+  // ── CAMERA KEYFRAMES — one per section, camera passes INTO each object ──
+  const SECTION_IDS = ['hero', 'about', 'experience', 'skills', 'projects', 'education', 'contact'];
+  const KEYS = [
+    { pos: [0, 0.4, 3],      look: [0, 0, -24],  fogFar: 70 },   // hero: the mind ahead
+    { pos: [0, 0.2, -13],    look: [0, 0, -24],  fogFar: 60 },   // about: drawing close
+    { pos: [0, 0.3, -20.5],  look: [0, 0, -26],  fogFar: 52 },   // experience: inside, core near
+    { pos: [0.6, 0.6, -27],  look: [-1, 0, -38], fogFar: 56 },   // skills: past the core, looking deeper
+    { pos: [0, 0.8, -35],    look: [0, 0, -24],  fogFar: 62 },   // projects: far side, looking back
+    { pos: [-2, 2.5, -45],   look: [0, 0, -24],  fogFar: 95 },   // education: drifting out
+    { pos: [0, 7.5, -62],    look: [0, 0, -24],  fogFar: 300 },  // contact: the whole constellation
+  ];
+
+  const smooth = t => t * t * (3 - 2 * t);
+  const tmpV = new THREE.Vector3();
+  const camTargetPos = new THREE.Vector3().fromArray(KEYS[0].pos);
+  const camTargetLook = new THREE.Vector3().fromArray(KEYS[0].look);
+  const camLook = camTargetLook.clone();
+  let fogFarTarget = KEYS[0].fogFar;
+
+  // map scroll to section-synced progress: keyframe i is "active"
+  // when section i's center crosses the viewport center
+  let anchors = [];
+  function computeAnchors() {
+    anchors = SECTION_IDS.map(id => {
+      const el = document.getElementById(id);
+      if (!el) return 0;
+      return el.offsetTop + el.offsetHeight / 2 - window.innerHeight / 2;
+    });
+  }
+
+  function updateCameraTargets() {
+    const y = window.scrollY;
+    let i = 0;
+    while (i < anchors.length - 2 && y > anchors[i + 1]) i++;
+    const span = Math.max(anchors[i + 1] - anchors[i], 1);
+    const t = smooth(Math.min(Math.max((y - anchors[i]) / span, 0), 1));
+    const a = KEYS[i], b = KEYS[Math.min(i + 1, KEYS.length - 1)];
+    camTargetPos.fromArray(a.pos).lerp(tmpV.fromArray(b.pos), t);
+    camTargetLook.fromArray(a.look).lerp(tmpV.fromArray(b.look), t);
+    fogFarTarget = a.fogFar + (b.fogFar - a.fogFar) * t;
+  }
+
+  // ── mouse parallax ──
+  let mx = 0, my = 0;
+  window.addEventListener('pointermove', e => {
+    mx = (e.clientX / window.innerWidth - 0.5) * 2;
+    my = (e.clientY / window.innerHeight - 0.5) * 2;
+  }, { passive: true });
+
+  // ── render loop ──
+  const clock = new THREE.Clock();
+  let elapsed = 0;
+
+  function tick() {
+    const dt = Math.min(clock.getDelta(), 0.05);
+    elapsed += dt;
+    const damp = 1 - Math.exp(-(reduceMotion ? 14 : 3.4) * dt);
+
+    updateCameraTargets();
+
+    if (!reduceMotion) {
+      netGroup.rotation.y += dt * 0.045;
+      const breathe = Math.sin(elapsed * 0.7);
+      core.material.emissiveIntensity = 0.9 + breathe * 0.35;
+      coreHalo.rotation.x = elapsed * 0.2;
+      coreHalo.rotation.y = -elapsed * 0.15;
+      coreHalo.scale.setScalar(1 + breathe * 0.06);
+
+    }
+
+    camera.position.lerp(camTargetPos, damp);
+    camLook.lerp(camTargetLook, damp);
+    camera.lookAt(camLook);
+    if (!reduceMotion) {
+      camera.position.x += mx * 0.3;
+      camera.position.y += -my * 0.22;
+    }
+
+    scene.fog.far += (fogFarTarget - scene.fog.far) * damp;
+    lantern.position.copy(camera.position);
+
+    renderer.render(scene, camera);
+    requestAnimationFrame(tick);
+  }
+
+  computeAnchors();
+  tick();
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    computeAnchors();
+  });
+  window.addEventListener('load', computeAnchors);
+
+  /* ════════════════════════════════════════════════════════════
+     HERO SEARCH: auto-typing queries + ranked hits
+     ════════════════════════════════════════════════════════════ */
+
+  const ICONS = {
+    role: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>',
+    stack: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
+    person: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+    mail: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>',
+  };
+
+  const QUERIES = [
+    { q: 'large-scale elasticsearch infrastructure', hits: [
+      { i: 'role',   t: 'Senior SWE — Search Infrastructure', s: 'Zendesk · 2021—2026', sc: '0.98', href: '#experience' },
+      { i: 'stack',  t: 'Blue/green cluster lifecycle, zero-impact cutover', s: 'experience › zendesk', sc: '0.95', href: '#experience' },
+      { i: 'stack',  t: 'Parallelized distributed indexing pipelines', s: 'experience › zendesk', sc: '0.92', href: '#experience' },
+    ]},
+    { q: 'devops platform engineer, san francisco', hits: [
+      { i: 'person', t: 'William Tsang — open to opportunities', s: 'about · status: open', sc: '0.99', href: '#about' },
+      { i: 'stack',  t: 'AWS · Kubernetes · Terraform · Chef · Spinnaker', s: 'stack › cloud & devops', sc: '0.96', href: '#skills' },
+      { i: 'role',   t: 'Senior Platform Services Engineer', s: 'Zendesk · 2018—2021', sc: '0.93', href: '#experience' },
+    ]},
+    { q: 'ai-augmented development workflows', hits: [
+      { i: 'stack',  t: 'Claude Code · Cursor · MCP Agents', s: 'stack › ai & workflow', sc: '0.97', href: '#skills' },
+      { i: 'role',   t: 'AI agents across the feature lifecycle', s: 'experience › zendesk', sc: '0.94', href: '#experience' },
+    ]},
+    { q: 'who is william tsang?', hits: [
+      { i: 'person', t: '10+ years building resilient systems', s: 'about', sc: '1.00', href: '#about' },
+      { i: 'mail',   t: 'will.ktsang@gmail.com', s: 'contact · replies fast', sc: '0.99', href: '#contact' },
+    ]},
+  ];
+
+  const widget = document.getElementById('searchWidget');
+  const qEl = document.getElementById('searchQ');
+  const caret = qEl.querySelector('.caret');
+  const resBox = document.getElementById('searchResults');
+  const hitsMeta = document.getElementById('searchHits');
+  const hitList = document.getElementById('hitList');
+  const qText = document.createTextNode('');
+  qEl.insertBefore(qText, caret);
+
+  function renderHits(entry) {
+    hitsMeta.textContent = entry.hits.length + ' hits · ' + (18 + Math.floor(Math.random() * 30)) + ' ms';
+    hitList.innerHTML = '';
+    entry.hits.forEach((h, i) => {
+      const a = document.createElement('a');
+      a.className = 'hit';
+      a.href = h.href;
+      a.innerHTML =
+        '<span class="h-ic">' + ICONS[h.i] + '</span>' +
+        '<span class="h-body"><span class="h-title">' + h.t + '</span><br>' +
+        '<span class="h-sub">' + h.s + '</span></span>' +
+        '<span class="h-score">' + h.sc + '</span>';
+      hitList.appendChild(a);
+      setTimeout(() => a.classList.add('show'), 90 * i);
+    });
+    resBox.hidden = false;
+  }
+
+  if (reduceMotion) {
+    qText.textContent = QUERIES[0].q;
+    renderHits(QUERIES[0]);
+  } else {
+    let qi = 0;
+    function playQuery() {
+      const entry = QUERIES[qi];
+      let ci = 0;
+      widget.classList.add('live');
+      resBox.hidden = true;
+
+      (function typeChar() {
+        if (ci <= entry.q.length) {
+          qText.textContent = entry.q.slice(0, ci++);
+          setTimeout(typeChar, 38 + Math.random() * 46);
+        } else {
+          setTimeout(() => {
+            renderHits(entry);
+            setTimeout(erase, 3600);
+          }, 320);
+        }
+      })();
+
+      function erase() {
+        resBox.hidden = true;
+        widget.classList.remove('live');
+        (function del() {
+          const cur = qText.textContent;
+          if (cur.length) {
+            qText.textContent = cur.slice(0, -1);
+            setTimeout(del, 14);
+          } else {
+            qi = (qi + 1) % QUERIES.length;
+            setTimeout(playQuery, 700);
+          }
+        })();
+      }
+    }
+    setTimeout(playQuery, 1200);
+  }
+})();
+</script>
 </body>
 </html>
