@@ -434,7 +434,10 @@
   /* ── 3D CANVAS + AURORA ── */
   #net {
     position: fixed;
-    inset: 0;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100lvh; /* iOS: ignore URL-bar collapse */
     z-index: -1;
     pointer-events: none;
   }
@@ -582,6 +585,8 @@
 
   @media (max-width: 860px) {
     .nav-links { display: none; }
+    .search-bar kbd { display: none; }
+    .search-q { font-size: 13px; }
     .about-grid, .skills-grid, .duo-grid { grid-template-columns: 1fr; }
     section { padding: 80px 0; }
   }
@@ -947,14 +952,28 @@
   const canvas = document.getElementById('net');
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setClearColor(0x000000, 0); // let the CSS backdrop show through
+
+  // Stable viewport: iOS Safari fires resize as the URL bar collapses while
+  // scrolling. We snapshot the size and only rebuild on real changes
+  // (width/orientation, or a large height jump) so the scene never shifts
+  // mid-scroll.
+  let viewW = window.innerWidth;
+  let viewH = window.innerHeight;
 
   const scene = new THREE.Scene();
   scene.fog = new THREE.Fog(COL.bg, 4, 70);
 
-  const camera = new THREE.PerspectiveCamera(58, window.innerWidth / window.innerHeight, 0.1, 500);
+  const camera = new THREE.PerspectiveCamera(58, viewW / viewH, 0.1, 500);
   camera.position.set(0, 0.4, 2);
+
+  function applySize() {
+    renderer.setSize(viewW, viewH);
+    camera.aspect = viewW / viewH;
+    camera.fov = viewW < 700 ? 74 : 58; // wider lens on portrait phones
+    camera.updateProjectionMatrix();
+  }
+  applySize();
 
   scene.add(new THREE.AmbientLight(COL.ink, 0.5));
   const key = new THREE.DirectionalLight(COL.accent, 0.7);
@@ -1059,7 +1078,7 @@
     anchors = SECTION_IDS.map(id => {
       const el = document.getElementById(id);
       if (!el) return 0;
-      return el.offsetTop + el.offsetHeight / 2 - window.innerHeight / 2;
+      return el.offsetTop + el.offsetHeight / 2 - viewH / 2;
     });
   }
 
@@ -1077,10 +1096,12 @@
 
   // ── mouse parallax ──
   let mx = 0, my = 0;
-  window.addEventListener('pointermove', e => {
-    mx = (e.clientX / window.innerWidth - 0.5) * 2;
-    my = (e.clientY / window.innerHeight - 0.5) * 2;
-  }, { passive: true });
+  if (window.matchMedia('(pointer: fine)').matches) {
+    window.addEventListener('pointermove', e => {
+      mx = (e.clientX / viewW - 0.5) * 2;
+      my = (e.clientY / viewH - 0.5) * 2;
+    }, { passive: true });
+  }
 
   // ── render loop ──
   const clock = new THREE.Clock();
@@ -1122,10 +1143,21 @@
   tick();
 
   window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    computeAnchors();
+    const w = window.innerWidth, h = window.innerHeight;
+    // width change = rotation/real resize; small height-only changes are
+    // just the iOS URL bar and must not move the scene
+    if (w !== viewW || Math.abs(h - viewH) > 150) {
+      viewW = w; viewH = h;
+      applySize();
+      computeAnchors();
+    }
+  });
+  window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+      viewW = window.innerWidth; viewH = window.innerHeight;
+      applySize();
+      computeAnchors();
+    }, 250);
   });
   window.addEventListener('load', computeAnchors);
 
